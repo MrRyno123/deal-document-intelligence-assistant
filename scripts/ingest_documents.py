@@ -10,6 +10,8 @@ def find_scope(path):
         return "media"
     elif any(p in suffix for p in ["xlsx","xls"]):
         return "financial_model"
+    elif "pptx" in suffix:
+        return "deck"
     elif any(p in formatted_filename for p in ["deck", "presentation","pitch","roadshow"]):
         return "deck"
     elif any(p in formatted_filename for p in ["agreement","term","lpa","nda","safe"]):

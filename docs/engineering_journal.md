@@ -1,0 +1,13 @@
+- # Significant Choices
+  - ### Parser Choices
+    - PyMuPDF for PDF parsing becuase it was faster than other options like pdfplumber and I like the page numbering system better
+    - Python pptx for pptx files because it's built in and simple
+    - Python docx for docx, same reasons as pptx
+  - ### Dataroom Filtering 
+    - Considered manually preparing folders with only scope documents but thought it would be more functional and future-proof to filter
+  - ### Relative Paths
+    - Security and recreatability on other people's computers
+  - ### Pageless/Paragraphless .docx storage
+    - I figured it would make more sense to section docx files later on in chunking than do paragraph separation, which would have created tons and tons of records
+  - ### Image Only Decks
+    - Keeping a record of these for later because I want to parse them with OCR
