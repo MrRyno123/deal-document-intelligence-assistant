@@ -18,6 +18,4 @@ def retrieve(question,k=5):
             "page": meta["page"],
             "distance": dist,
         })
-    for h in hits:
-        print(f"[{h['distance']:.3f}] {h['document']} p.{h['page']}  —  {h['text'][:90]}")
     return hits
