@@ -1,0 +1,38 @@
+
+questions:
+
+  - id: easy_01
+    question: Which companies mention launch services as part of their business model?
+    difficulty: easy
+    category: aggregation
+    expected_source: null
+    gold_answer: null
+
+  - id: med_01
+    question: Which companies serve both government and commercial customers?
+    difficulty: medium
+    category: compound
+    expected_source: null
+    gold_answer: null
+
+  - id: hard_01
+    question: Which non-Mars-focused companies report at least $2 million in revenue?
+    difficulty: hard
+    category: numeric
+    expected_source: null
+    gold_answer: null
+    note: known weakness — numeric threshold + negation
+
+  - id: needle_01
+    question: In what year was Example Space Co. founded, and by whom?
+    difficulty: easy
+    category: single_fact
+    expected_source: Example Space Co - Series A Deck.pdf
+    gold_answer: Founded in 20XX by Jane Doe.
+
+  - id: refuse_01
+    question: What was Some Out-Of-Corpus Company's revenue last year?
+    difficulty: hard
+    category: refusal
+    expected_source: null
+    gold_answer: SHOULD REFUSE — company not in the document set; expect "not enough information".

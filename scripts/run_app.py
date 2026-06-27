@@ -1,2 +1,3 @@
 from src.generation.answer import answer
-print(answer("What companies "))
+text, hits = answer("Which company forecasts the highest revenue growth?")
+print(text)

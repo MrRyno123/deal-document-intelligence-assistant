@@ -27,4 +27,4 @@ QUESTION: {question}
         messages=[{"role": "user", "content": prompt}],
     )
     answer_text = response.content[0].text
-    return answer_text
+    return answer_text, hits

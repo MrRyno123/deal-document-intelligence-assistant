@@ -77,6 +77,12 @@ embeddings/
 *.pickle
 
 # ------------------------------------------
+# Evals (real benchmark contains confidential corpus facts;
+# only the sanitized .example version is committed)
+# ------------------------------------------
+evals/benchmark_questions.yaml
+
+# ------------------------------------------
 # Logs & Generated Outputs
 # ------------------------------------------
 logs/
