@@ -1,8 +1,11 @@
 import pandas as pd
+import os
 import yaml
 from src.generation.answer import answer
 
 def run_eval(questions_path, output_path):
+    if os.path.exists(output_path):
+        raise FileExistsError(f"{output_path} exists. Pick a new name.")
     questions = yaml.safe_load(open(questions_path))["questions"]
     rows = []
     for q in questions:

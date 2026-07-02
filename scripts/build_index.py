@@ -2,8 +2,10 @@ import chromadb
 import pandas as pd
 from src.retrieval.index import embed
 
-def build_index(chunks_path,output_path):
+def build_index(chunks_path,output_path,inventory_path):
     df = pd.read_json(chunks_path,lines=True)
+    inv = pd.read_csv(inventory_path)
+    doc_type_by_row = {(row["company"], row["filename"]): row["scope"] for _, row in inv.iterrows()}
     client = chromadb.PersistentClient(output_path)
     client.get_or_create_collection("deal_docs")
     client.delete_collection("deal_docs")
@@ -17,7 +19,9 @@ def build_index(chunks_path,output_path):
             "document": row["document"],
             "company": row["company"],
             "page": int(row["page"]),
-            "chunk_index": int(row["chunk_index"])})
+            "chunk_index": int(row["chunk_index"]),
+            "doc_type": doc_type_by_row.get((row["company"], row["document"]),"unknown"),
+        })
     collection.add(
         ids = ids,
         embeddings=embed(documents),
@@ -29,4 +33,4 @@ def build_index(chunks_path,output_path):
 
 
 if __name__ == "__main__":
-    build_index("data/processed/chunks.jsonl", "data/processed/chroma")
+    build_index("data/processed/chunks.jsonl", "data/processed/chroma","data/processed/inventory.csv")

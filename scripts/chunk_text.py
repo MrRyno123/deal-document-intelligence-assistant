@@ -1,6 +1,6 @@
 import pandas as pd
 from src.chunking.chunker import chunker
-
+from src.chunking.dedup import dedup_chunks
 def chunk_text(extracted_path,output_path):
     index_json = pd.read_json(extracted_path, lines=True)
     chunked_output = []
@@ -16,6 +16,7 @@ def chunk_text(extracted_path,output_path):
                 "chunk_index": index,
                 "text": chunk,
             })
+    chunked_output = dedup_chunks(chunked_output)
     pd.DataFrame(chunked_output).to_json(output_path, orient="records", lines=True)
 
 
