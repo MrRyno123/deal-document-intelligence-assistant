@@ -3,9 +3,12 @@ import chromadb
 client = chromadb.PersistentClient("data/processed/chroma")
 collection = client.get_collection("deal_docs")
 
-def retrieve(question,k=5):
+def retrieve(question,k=5,where=None):
+    kwargs = {"n_results": k}
+    if where is not None:
+        kwargs["where"] = where
     query_vector = embed([question])[0]
-    results = collection.query(query_embeddings=[query_vector], n_results=k)
+    results = collection.query(query_embeddings=[query_vector], **kwargs)
     docs = results["documents"][0]
     metas = results["metadatas"][0]
     dists = results["distances"][0]
