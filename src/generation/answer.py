@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 client = Anthropic()
 
-def answer(question, k=5):
-    hits = retrieve(question, k)
+def answer(question, k=5,where=None):
+    hits = retrieve(question, k, where)
     context = "\n\n".join(
         f"[{h['document']}, p.{h['page']}]\n{h['text']}"
         for h in hits
