@@ -1,12 +1,12 @@
-from src.retrieval.search import retrieve
+from src.retrieval.search import retrieve, retrieve_mmr
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
 load_dotenv()
 client = Anthropic()
 
-def answer(question, k=5,where=None):
-    hits = retrieve(question, k, where)
+def answer(question, k=5,where=None,use_mmr=False):
+    hits = retrieve_mmr(question, k, where) if use_mmr == True else retrieve(question, k, where)
     context = "\n\n".join(
         f"[{h['document']}, p.{h['page']}]\n{h['text']}"
         for h in hits

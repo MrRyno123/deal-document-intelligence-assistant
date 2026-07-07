@@ -10,8 +10,9 @@ def run_eval(questions_path, output_path):
     questions = yaml.safe_load(open(questions_path))["questions"]
     rows = []
     for q in questions:
-        where = infer_filter(q["question"])
-        text, hits = answer(q["question"], where=where)
+        # where = infer_filter(q["question"])
+        where = None
+        text, hits = answer(q["question"], where=where,use_mmr=True)
         retrieved_sources = " | ".join(f"{h['document']} p.{h['page']}" for h in hits)
         top_source = f"{hits[0]['document']} p.{hits[0]['page']}" if hits else ""
         rows.append({
@@ -35,5 +36,5 @@ def run_eval(questions_path, output_path):
 if __name__ == "__main__":
     run_eval(
         "evals/benchmark_questions.yaml",
-        "eval_results/exp2_query_inference.csv",
+        "eval_results/exp3_mmr.csv",
     )
