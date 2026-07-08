@@ -9,4 +9,4 @@ def ingest_documents(root_folder,output_csv):
     print(f"Wrote {len(rows)} files to {output_csv}")
 
 if __name__ == "__main__":
-    ingest_documents("data/raw/Space", "data/processed/inventory.csv")
+    ingest_documents("data/raw", "data/processed/inventory.csv")

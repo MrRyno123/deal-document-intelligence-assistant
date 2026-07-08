@@ -24,7 +24,7 @@ def extract_text(corpus_root, inventory_csv, output_path):
 
 if __name__ == "__main__":
     extract_text(
-        corpus_root="data/raw/Space",
+        corpus_root="data/raw",
         inventory_csv="data/processed/inventory.csv",
         output_path="data/processed/extracted.jsonl",
     )

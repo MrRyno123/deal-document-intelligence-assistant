@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 def find_all_files(root_folder):
     root = Path(root_folder)
-    return [p for p in root.rglob("*") if p.is_file()]
+    return [p for p in root.rglob("*") if p.is_file() and not p.name.startswith(".")]
 def find_scope(path):
     formatted_filename = path.name.lower()
     suffix = path.suffix.lower()
@@ -30,7 +30,8 @@ def describe_file(path,root_folder):
     root = Path(root_folder)
     relative = path.relative_to(root)
     return {
-        "company": relative.parts[0],
+        "domain":  relative.parts[0],
+        "company": relative.parts[1],
         "filename": path.name,
         "extension": path.suffix.lower(),
         "size_mb": round(path.stat().st_size / 1048576, 1),
