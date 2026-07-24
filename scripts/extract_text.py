@@ -5,7 +5,7 @@ from src.parsing.extract import extract_file
 def extract_text(corpus_root, inventory_csv, output_path):
     root = Path(corpus_root)
     df = pd.read_csv(inventory_csv)
-    in_scope = df[df["scope"].isin(["deck","memo","summary"])]
+    in_scope = df[df["scope"].isin(["deck","memo","summary","notes"])]
     all_pages = []
     for idx, row in in_scope.iterrows():
         full_path = root / row["relative_path"]

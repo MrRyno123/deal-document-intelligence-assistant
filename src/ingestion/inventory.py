@@ -1,11 +1,14 @@
 from pathlib import Path
 import pandas as pd
+
 def find_all_files(root_folder):
     root = Path(root_folder)
-    return [p for p in root.rglob("*") if p.is_file() and not p.name.startswith(".")]
+    return [p for p in root.rglob("*") if p.is_file() and not p.name.startswith(".") and not p.name.startswith("~$")]
 def find_scope(path):
     formatted_filename = path.name.lower()
     suffix = path.suffix.lower()
+    if "Meeting Notes" in path.parts:
+        return "notes"
     if any(p in suffix for p in ["mp4","mov","png","jpg","jpeg","gif","svg"]):
         return "media"
     elif any(p in suffix for p in ["xlsx","xls"]):

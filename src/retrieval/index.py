@@ -2,7 +2,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
-client = OpenAI()
+client = OpenAI(max_retries=8)
 
 def embed(texts, batch_size=100):
     all_vectors = []
