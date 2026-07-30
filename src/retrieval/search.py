@@ -3,6 +3,7 @@ import chromadb
 client = chromadb.PersistentClient("data/processed/chroma")
 collection = client.get_collection("deal_docs")
 import numpy as np
+import datetime
 
 def retrieve(question,k=5,where=None):
     kwargs = {"n_results": k}
@@ -21,6 +22,7 @@ def retrieve(question,k=5,where=None):
             "company": meta["company"],
             "page": meta["page"],
             "distance": dist,
+            "date": meta.get("date", 0),
         })
     return hits
 
@@ -65,3 +67,34 @@ def mmr_select(query_vector, hits, k=5, lambda_mult=0.6):
         selected.append(best)
         candidates.remove(best)
     return selected
+
+def _to_ordinal(d):
+    if not d: return None
+    year = int(str(d)[:4])
+    month = int(str(d)[4:6])
+    day = int(str(d)[6:])
+    return datetime.date(year, month, day).toordinal()
+
+
+def recency_select(hits, k=5, lambda_recency=0.7):
+    distances = [h["distance"] for h in hits]
+    ordinals = [_to_ordinal(h["date"]) for h in hits]
+    dated = [o for o in ordinals if o is not None]
+    omin, omax = (min(dated), max(dated)) if dated else (0, 0)
+    dmin = min(distances)
+    dmax = max(distances)
+    for h, o in zip(hits, ordinals):
+        rel = (dmax - h["distance"]) / (dmax - dmin) if dmax > dmin else 1.0
+        if o is None:
+            rec = 0.0
+        elif omax == omin:
+            rec = 1.0
+        else:
+            rec = (o - omin) / (omax - omin)
+        h["score"] = lambda_recency * rel + (1 - lambda_recency) * rec
+    return sorted(hits, key=lambda h: h["score"], reverse=True)[:k]
+
+
+def retrieve_recency(question, k=5, where=None, pool_size=20, lambda_recency=0.7):
+    pool = retrieve(question, pool_size, where)
+    return recency_select(pool, k, lambda_recency)

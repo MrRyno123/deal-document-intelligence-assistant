@@ -1,6 +1,7 @@
 import chromadb
 import pandas as pd
 from src.retrieval.index import embed
+from src.ingestion.tagging import tag_date
 
 def build_index(chunks_path,output_path,inventory_path,note_tags_path):
     df = pd.read_json(chunks_path,lines=True)
@@ -29,6 +30,7 @@ def build_index(chunks_path,output_path,inventory_path,note_tags_path):
             "chunk_index": int(row["chunk_index"]),
             "doc_type": doc_type,
             "domain": domain,
+            "date": tag_date(row["document"]),
         })
     embeddings = embed(documents)
     B = 5000
