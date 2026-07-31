@@ -34,14 +34,14 @@ def _is_refusal(text):
     return any(r in text.lower() for r in refusals)
 def _best_distance(hits):
     return min((h['distance'] for h in hits), default=float("inf"))
-def answer(question, k=5,where=None,use_mmr=False,use_query_inference=True,margin=0.1,use_recency=False):
+def answer(question, k=5,where=None,use_mmr=True,use_query_inference=True,margin=0.1,use_recency=True):
     if use_query_inference and where is None:
         where = infer_filter(question)
     filter_applied = where is not None
 
     def _fetch(where):
         if use_mmr:
-            return retrieve_mmr(question, k, where)
+            return retrieve_mmr(question, k, where, w_rec=0.2 if use_recency else 0.0)
         if use_recency:
             return retrieve_recency(question, k, where)
         return retrieve(question, k, where)
