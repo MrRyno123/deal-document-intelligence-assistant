@@ -1,4 +1,4 @@
-from src.retrieval.search import retrieve, retrieve_mmr, retrieve_recency
+from src.retrieval.search import retrieve, retrieve_mmr, retrieve_recency, retrieve_hybrid, looks_lexical
 from anthropic import Anthropic
 from dotenv import load_dotenv
 from src.retrieval.query_inference import infer_filter
@@ -34,7 +34,10 @@ def _is_refusal(text):
     return any(r in text.lower() for r in refusals)
 def _best_distance(hits):
     return min((h['distance'] for h in hits), default=float("inf"))
-def answer(question, k=5,where=None,use_mmr=True,use_query_inference=True,margin=0.1,use_recency=True):
+def answer(question, k=5,where=None,use_mmr=True,use_query_inference=True,margin=0.1,use_recency=True,use_router=True):
+    if use_router and where is None and looks_lexical(question):
+        hits = retrieve_hybrid(question, k)
+        return _generate(question, hits), hits
     if use_query_inference and where is None:
         where = infer_filter(question)
     filter_applied = where is not None

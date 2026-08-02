@@ -4,6 +4,13 @@ client = chromadb.PersistentClient("data/processed/chroma")
 collection = client.get_collection("deal_docs")
 import numpy as np
 import datetime
+from src.retrieval.lexical import retrieve_bm25, rrf_fuse
+import re
+
+def retrieve_hybrid(question, k=5, pool_size=20):
+    vec = retrieve(question, pool_size)
+    lex = retrieve_bm25(question, pool_size)
+    return rrf_fuse([vec, lex], k)
 
 def retrieve(question,k=5,where=None):
     kwargs = {"n_results": k}
@@ -14,8 +21,9 @@ def retrieve(question,k=5,where=None):
     docs = results["documents"][0]
     metas = results["metadatas"][0]
     dists = results["distances"][0]
+    ids = results["ids"][0]
     hits = []
-    for doc, meta, dist in zip(docs, metas, dists):
+    for doc, meta, dist, id in zip(docs, metas, dists, ids):
         hits.append({
             "text": doc,
             "document": meta["document"],
@@ -23,6 +31,7 @@ def retrieve(question,k=5,where=None):
             "page": meta["page"],
             "distance": dist,
             "date": meta.get("date", 0),
+            "id": id,
         })
     return hits
 
@@ -38,8 +47,9 @@ def retrieve_mmr(question,k=5,where=None,pool_size=20,w_rec=0.0):
     docs = results["documents"][0]
     metas = results["metadatas"][0]
     dists = results["distances"][0]
+    ids = results["ids"][0]
     hits = []
-    for doc, meta, dist, emb in zip(docs, metas, dists, embs):
+    for doc, meta, dist, emb, id in zip(docs, metas, dists, embs, ids):
         hits.append({
             "text": doc,
             "document": meta["document"],
@@ -48,6 +58,7 @@ def retrieve_mmr(question,k=5,where=None,pool_size=20,w_rec=0.0):
             "distance": dist,
             "embedding": emb,
             "date": meta.get("date", 0),
+            "id": id,
         })
     return mmr_select(query_vector, hits, k, w_rec=w_rec)
 
@@ -107,3 +118,11 @@ def recency_select(hits, k=5, lambda_recency=0.8):
 def retrieve_recency(question, k=5, where=None, pool_size=20, lambda_recency=0.8):
     pool = retrieve(question, pool_size, where)
     return recency_select(pool, k, lambda_recency)
+
+def looks_lexical(question):
+    PATTERNS = [
+        r"\$",
+        r"\d[\d.,]*\s*(?:k|m|b|bn)\b",
+        r"\d{1,3},\d{3}"
+    ]
+    return any(re.search(p, question, re.I) for p in PATTERNS)
