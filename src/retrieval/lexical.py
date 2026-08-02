@@ -5,12 +5,16 @@ from rank_bm25 import BM25Okapi
 client = chromadb.PersistentClient("data/processed/chroma")
 collection = client.get_collection("deal_docs")
 
-data = collection.get(include=["documents","metadatas"])
-IDS = data["ids"]
-DOCS = data["documents"]
-METAS = data["metadatas"]
-TOKENIZED = [doc.lower().split() for doc in DOCS]
-bm25 = BM25Okapi(TOKENIZED)
+def refresh():
+    global IDS, DOCS, METAS, TOKENIZED, bm25
+    data = collection.get(include=["documents", "metadatas"])
+    IDS = data["ids"]
+    DOCS = data["documents"]
+    METAS = data["metadatas"]
+    TOKENIZED = [d.lower().split() for d in DOCS]
+    bm25 = BM25Okapi(TOKENIZED)
+    
+refresh()
 
 def retrieve_bm25(question,k=5):
     query_tokens = question.lower().split()

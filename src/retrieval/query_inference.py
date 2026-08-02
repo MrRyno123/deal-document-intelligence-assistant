@@ -7,12 +7,16 @@ from dotenv import load_dotenv
 load_dotenv()
 client = Anthropic()
 
-SCHEMA = {
+def refresh():
+    global SCHEMA, fields_text
+    SCHEMA = {
         "company":  sorted({m["company"] for m in collection.get(include=["metadatas"])["metadatas"]}),
         "doc_type": ["deck", "memo", "summary"],
     }
-lines = [f"- {field}: must be exactly one of {values}" for field, values in SCHEMA.items()]
-fields_text = "\n".join(lines)
+    lines = [f"- {field}: must be exactly one of {values}" for field, values in SCHEMA.items()]
+    fields_text = "\n".join(lines)
+
+refresh()
 
 def infer_filter(question):
     prompt = f"""You are a query-filter extractor for a document search system. Read the user's question and decide which metadata filters, if any, should narrow the search.
