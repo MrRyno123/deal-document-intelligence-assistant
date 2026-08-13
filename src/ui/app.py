@@ -16,7 +16,7 @@ from src.retrieval.search import collection
 st.set_page_config(page_title="Deal Document Intelligence", layout="wide")
 
 DOC_TYPES = ["deck", "memo", "summary", "notes"]
-NEW = "➕ New…"
+NEW = "+ New…"
 
 
 @st.cache_data(show_spinner=False)
@@ -46,7 +46,7 @@ with st.sidebar:
     st.caption(f"Corpus: {collection.count():,} chunks · {len(company_list())} companies")
 
 st.title("Parsons & Whittemore RAG")
-st.caption("[Demo GUI; I'll make the final one nicer]")
+st.caption(" ")
 
 tab_ask, tab_card, tab_add = st.tabs(["Ask a question", "Company card", "Add document"])
 
